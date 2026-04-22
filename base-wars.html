@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BASE WARS</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- HUD -->
+<div id="hud">
+  <div class="logo">BASE WARS</div>
+  <div id="round-display">ROUND <span id="round-num">—</span> / 10</div>
+  <button id="btn-start">MENU</button>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="canvas-wrapper">
+    <canvas id="game-canvas"></canvas>
+    <div id="action-panel"></div>
+  </div>
+
+  <div id="side-panel">
+    <div class="panel-title">Players</div>
+    <div id="player-cards"></div>
+    <div id="log">
+      <div class="panel-title">Combat Log</div>
+      <div id="log-entries"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ROUND FLASH -->
+<div id="round-flash"><div class="flash-text" id="flash-text"></div></div>
+
+<!-- OVERLAY (initial state — main.js will attach the button listener) -->
+<div id="overlay">
+  <div class="overlay-box" id="overlay-box">
+    <h1>BASE WARS</h1>
+    <div class="sub">TACTICAL AUTO-BATTLER</div>
+    <p>
+      Each player's <strong>base</strong> automatically spawns units every few seconds.<br>
+      <strong>Click/tap</strong> on the map to move your units (RED ★).<br>
+      Destroy an enemy base <strong>OR</strong> have the most kills after <strong>10 rounds</strong> to win.
+    </p>
+    <div class="num-players-row">
+      <label>PLAYERS</label>
+      <select class="num-select" id="num-players-select">
+        <option value="6">6</option>
+        <option value="7" selected>7</option>
+      </select>
+    </div>
+    <div class="num-players-row">
+      <label>DIFFICULTY</label>
+      <select class="num-select" id="difficulty-select">
+        <option value="easy">Easy</option>
+        <option value="medium" selected>Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+    </div>
+    <button class="btn-primary" id="btn-deploy">DEPLOY</button>
+  </div>
+</div>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>
