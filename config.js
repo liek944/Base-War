@@ -95,3 +95,12 @@ export const AI_DIFFICULTY_SETTINGS = {
     noiseAmount:      0,   // no noise — hard bots always pick the optimal target
   },
 };
+
+// ── Events ──────────────────────────────────────────────────────────────────
+export const EVENT_CHANCE = 0.25; // 25% chance per round
+export const GOBLIN_HP = 500;
+export const GOBLIN_SPEED = 2.5;
+export const GOBLIN_RADIUS = 8;
+export const GOBLIN_GOLD_HIT = 2;
+export const GOBLIN_GOLD_KILL = 50;
+

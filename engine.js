@@ -93,6 +93,12 @@ function startRound() {
   flashRound(`ROUND ${state.round}`);
   addLog(`── Round ${state.round} started ──`, 'round');
   awardRoundGold();
+
+  import('./config.js').then(c => {
+    if (state.round > 1 && Math.random() < c.EVENT_CHANCE) {
+      import('./events.js').then(m => m.triggerRandomEvent());
+    }
+  });
 }
 
 // ── Core game loop ──
@@ -138,8 +144,24 @@ function update() {
   // Unit movement & combat phase
   for (const u of state.units) {
     if (u.dead) continue;
+    
+    // Handle neutral units like Goblin
+    if (u.isNeutral && u.type === 'goblin') {
+      const slowFactor = getSlowFactor(u);
+      const effectiveSpeed = u.speed * slowFactor;
+      u.x += Math.cos(u.angle) * effectiveSpeed;
+      u.y += Math.sin(u.angle) * effectiveSpeed;
+      
+      const margin = 20;
+      if (u.x < margin || u.x > (state.W || 800) - margin) u.angle = Math.PI - u.angle;
+      if (u.y < margin || u.y > (state.H || 600) - margin) u.angle = -u.angle;
+      
+      if (Math.random() < 0.05) u.angle += (Math.random() - 0.5);
+      continue;
+    }
+
     const p = state.players[u.ownerId];
-    if (!p.alive) { u.dead = true; continue; }
+    if (!p || !p.alive) { u.dead = true; continue; }
 
     // Stunned units can't move or attack
     if (isStunned(u)) continue;
@@ -232,10 +254,23 @@ function resolveAttack(attacker, target, attackerPlayer) {
       }
     }
 
+    if (target.obj.isNeutral && target.obj.type === 'goblin') {
+      import('./config.js').then(c => {
+        attackerPlayer.gold += c.GOBLIN_GOLD_HIT;
+      });
+    }
+
     if (target.obj.hp <= 0) {
       target.obj.dead = true;
-      attackerPlayer.kills++;
-      awardKillGold(attackerPlayer);
+      if (target.obj.isNeutral && target.obj.type === 'goblin') {
+        import('./config.js').then(c => {
+          attackerPlayer.gold += c.GOBLIN_GOLD_KILL;
+          addLog(`${attackerPlayer.name} killed the Loot Goblin!`, 'event');
+        });
+      } else {
+        attackerPlayer.kills++;
+        awardKillGold(attackerPlayer);
+      }
     }
   } else if (target.type === 'base') {
     let dmg = applyPassiveDamageDealt(attacker, target, attacker.dmg);

@@ -86,7 +86,8 @@ function drawBase(p) {
 
 function drawUnit(u) {
   const { ctx } = state;
-  const p       = state.players[u.ownerId];
+  const p       = u.isNeutral ? null : state.players[u.ownerId];
+  const color   = u.isNeutral ? '#ffdd44' : p.color;
   const hpRatio = u.hp / u.maxHp;
   const sel     = u.selected;
   const r       = u.radius || UNIT_RADIUS;
@@ -105,10 +106,13 @@ function drawUnit(u) {
   // T3 glow
   if (u.tier === 't3') {
     ctx.shadowBlur  = 14;
-    ctx.shadowColor = p.color + '88';
+    ctx.shadowColor = color + '88';
   } else if (u.tier === 't2') {
     ctx.shadowBlur  = 8;
-    ctx.shadowColor = p.color + '44';
+    ctx.shadowColor = color + '44';
+  } else if (u.type === 'goblin') {
+    ctx.shadowBlur  = 10;
+    ctx.shadowColor = '#ffdd4488';
   }
 
   if (sel && !u.invisible) {
@@ -143,7 +147,7 @@ function drawUnit(u) {
       break;
   }
 
-  ctx.fillStyle = p.color + (sel ? 'ff' : 'aa');
+  ctx.fillStyle = color + (sel ? 'ff' : 'aa');
   ctx.fill();
 
   if (sel && !u.invisible) {

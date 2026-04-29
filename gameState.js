@@ -17,6 +17,7 @@ export const state = {
   mouseCurrent: {x:0, y:0},
   animId: null,
   alliances: new Set(), // stores "idA-idB" strings (sorted), e.g. "0-2"
+  currentEvent: null,
 };
 
 // ── Alliance helpers ─────────────────────────────────────────────────────────

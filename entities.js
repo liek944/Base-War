@@ -18,9 +18,12 @@ export function buildSpawnPositions(count) {
 export function findNearestEnemy(unit) {
   let best = null, bestDist = Infinity;
 
+  // Loot goblin doesn't attack
+  if (unit.isNeutral) return null;
+
   for (const u of state.units) {
     if (u.dead || u.ownerId === unit.ownerId) continue;
-    if (!state.players[u.ownerId].alive) continue;
+    if (!u.isNeutral && !state.players[u.ownerId]?.alive) continue;
     // Can't target invisible enemies
     if (u.invisible) continue;
     const d = Math.hypot(u.x - unit.x, u.y - unit.y);
@@ -77,6 +80,34 @@ export function spawnUnit(player, tier = 't1') {
     invisible:   false,
     vanishBonus: false,
     lastTargetId: null,
+  });
+}
+
+// ── Spawn a Loot Goblin ──
+export function spawnLootGoblin() {
+  import('./config.js').then(c => {
+    state.units.push({
+      id:          Math.random(),
+      ownerId:     'neutral',
+      isNeutral:   true,
+      type:        'goblin',
+      x:           (state.W || 800) / 2,
+      y:           (state.H || 600) / 2,
+      hp:          c.GOBLIN_HP,
+      maxHp:       c.GOBLIN_HP,
+      dmg:         0,
+      speed:       c.GOBLIN_SPEED,
+      range:       0,
+      radius:      c.GOBLIN_RADIUS,
+      shape:       'circle',
+      tier:        'boss',
+      dead:        false,
+      angle:       Math.random() * Math.PI * 2,
+      attackTimer: 0,
+      selected:    false,
+      debuffs:     [],
+      invisible:   false
+    });
   });
 }
 
